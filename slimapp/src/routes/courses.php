@@ -21,10 +21,12 @@ $app->get('/mesajlar', function (Request $request, Response $response) {
 
         $mesajlar = $db->query("SELECT * FROM feed")->fetchAll(PDO::FETCH_OBJ);
 
+		
+	
         return $response
             ->withStatus(200)
             ->withHeader("Content-Type", 'application/json')
-            ->withJson($mesajlar);
+            ->withJson($mesajlar, null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
 
     }catch(PDOException $e){
         return $response->withJson(
@@ -33,7 +35,7 @@ $app->get('/mesajlar', function (Request $request, Response $response) {
                     "text"  => $e->getMessage(),
                     "code"  => $e->getCode()
                 )
-            )
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
         );
     }
     $db = null;
@@ -51,7 +53,7 @@ $app->get('/mesajlar/{id}', function (Request $request, Response $response) {
         return $response
             ->withStatus(200)
             ->withHeader("Content-Type", 'application/json')
-            ->withJson($mesajlar);
+            ->withJson($mesajlar, null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
 
     }catch(PDOException $e){
         return $response->withJson(
@@ -60,7 +62,7 @@ $app->get('/mesajlar/{id}', function (Request $request, Response $response) {
                     "text"  => $e->getMessage(),
                     "code"  => $e->getCode()
                 )
-            )
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
         );
     }
     $db = null;
@@ -126,7 +128,7 @@ $app->post('/kayit', function (Request $request, Response $response) {
                  ->withStatus(200)
                  ->withHeader("Content-Type", 'application/json')
                  //->withJson($user->token);
-                 ->withJson($user);
+                 ->withJson($user, null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
 		
 			}
 			else
@@ -138,7 +140,7 @@ $app->post('/kayit', function (Request $request, Response $response) {
                     "error" => array(
                         "text"  => "Bu kullanıcı kayıtlı!"
                     )
-                ));
+                ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
 			}
 
     }
@@ -151,7 +153,7 @@ $app->post('/kayit', function (Request $request, Response $response) {
                 "error" => array(
                     "text"  => "Girdiğiniz bilgileri kontrol ediniz !"
                 )
-            ));
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
         }
 
 }
@@ -162,7 +164,7 @@ $app->post('/kayit', function (Request $request, Response $response) {
                     "text"  => $e->getMessage(),
                     "code"  => $e->getCode()
                 )
-            )
+            ),null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
         );
     }
     $db = null;
@@ -189,15 +191,16 @@ $app->post('/giris', function (Request $request, Response $response) {
 		$course = $prepare->execute();
 		$userData = $prepare->fetch(PDO::FETCH_OBJ);
 		
-        $user=internalUserDetails($userData->username);
+        
 		
 
             if($userData){
+				$user=internalUserDetails($userData->username);
             return $response
             ->withStatus(200)
             ->withHeader("Content-Type", 'application/json')
             //->withJson($user->token);
-            ->withJson($user);
+            ->withJson($user, null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
         }
 	
 		
@@ -209,7 +212,7 @@ $app->post('/giris', function (Request $request, Response $response) {
                     "error" => array(
                         "text"  => "Login işlemi sırasında bir problem oluştu."
                     )
-                ));
+                ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
         }
 
     }catch(PDOException $e){
@@ -219,7 +222,7 @@ $app->post('/giris', function (Request $request, Response $response) {
                     "text"  => $e->getMessage(),
                     "code"  => $e->getCode()
                 )
-            )
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
         );
     }
     $db = null;
@@ -257,7 +260,7 @@ $app->post('/mesaj_ekle', function (Request $request, Response $response) {
                 ->withHeader("Content-Type", 'application/json')
                 ->withJson(array(
                     "text"  => "Kayıt başarılı bir şekilde eklenmiştir.."
-                ));
+                ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
 
         } else {
             return $response
@@ -267,7 +270,7 @@ $app->post('/mesaj_ekle', function (Request $request, Response $response) {
                     "error" => array(
                         "text"  => "Ekleme işlemi sırasında bir problem oluştu."
                     )
-                ));
+                ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
         }
 
     }catch(PDOException $e){
@@ -277,7 +280,7 @@ $app->post('/mesaj_ekle', function (Request $request, Response $response) {
                     "text"  => $e->getMessage(),
                     "code"  => $e->getCode()
                 )
-            )
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
         );
     }
     $db = null;
@@ -291,7 +294,7 @@ else {
                 "text"  => "Geçersiz kullanıcı, Ekleme işlemi sırasında bir problem oluştu."
                 //"text"  => $user
             )
-        ));
+        ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
 }
 
 });
@@ -330,7 +333,7 @@ $app->post('/mesaj/guncelle/{id}', function (Request $request, Response $respons
                     ->withHeader("Content-Type", 'application/json')
                     ->withJson(array(
                         "text"  => "Mesaj başarılı bir şekilde güncellenmiştir.."
-                    ));
+                    ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
 
             } else {
                 return $response
@@ -340,7 +343,7 @@ $app->post('/mesaj/guncelle/{id}', function (Request $request, Response $respons
                         "error" => array(
                             "text"  => "Düzenleme işlemi sırasında bir problem oluştu."
                         )
-                    ));
+                    ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
             }
         }catch(PDOException $e){
             return $response->withJson(
@@ -349,7 +352,7 @@ $app->post('/mesaj/guncelle/{id}', function (Request $request, Response $respons
                         "text"  => $e->getMessage(),
                         "code"  => $e->getCode()
                     )
-                )
+                ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
             );
         }
         $db = null;
@@ -362,7 +365,7 @@ $app->post('/mesaj/guncelle/{id}', function (Request $request, Response $respons
                     "text"  => "Geçersiz kullanıcı, Düzenleme işlemi sırasında bir problem oluştu."
                     //"text"  => $user
                 )
-            ));
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
     }
     }    else {
         return $response->withStatus(500)->withJson(
@@ -370,7 +373,7 @@ $app->post('/mesaj/guncelle/{id}', function (Request $request, Response $respons
                 "error" => array(
                     "text"  => "ID bilgisi eksik.."
                 )
-            )
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
         );
     } 
 });
@@ -418,7 +421,7 @@ $app->post('/sil/{id}', function (Request $request, Response $response) {
                     "error" => array(
                         "text"  => "Silme işlemi sırasında bir problem oluştu."
                     )
-                ));
+                ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
         }
 
     }catch(PDOException $e){
@@ -428,7 +431,7 @@ $app->post('/sil/{id}', function (Request $request, Response $response) {
                     "text"  => $e->getMessage(),
                     "code"  => $e->getCode()
                 )
-            )
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
         );
     }
     $db = null;
@@ -441,7 +444,7 @@ $app->post('/sil/{id}', function (Request $request, Response $response) {
                 "text"  => "Geçersiz kullanıcı, Düzenleme işlemi sırasında bir problem oluştu."
                 //"text"  => $user
             )
-        ));
+        ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
 }
 
 }  else {
@@ -450,7 +453,7 @@ $app->post('/sil/{id}', function (Request $request, Response $response) {
             "error" => array(
                 "text"  => "ID bilgisi eksik.."
             )
-        )
+        ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
     );
 } 
 });
@@ -479,7 +482,7 @@ function internalUserDetails($input) {
                     "text"  => $e->getMessage(),
                     "code"  => $e->getCode()
                 )
-            )
+            ), null, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK
         );
     }
     
